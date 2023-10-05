@@ -529,4 +529,12 @@ impl HWIClient {
             ))
         }
     }
+
+    /// Close the connection to the device
+    pub fn close(&self) -> Result<(), Error> {
+        Python::with_gil(|py| {
+            self.hw_client.call_method(py, "close", (), None)?;
+            Ok(())
+        })
+    }
 }

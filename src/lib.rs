@@ -92,6 +92,8 @@ mod tests {
         client
             .get_master_xpub(types::HWIAddressType::Wit, 0)
             .unwrap();
+        client.close().unwrap();
+
     }
 
     #[test]
@@ -100,6 +102,8 @@ mod tests {
         let client = get_first_device();
         let derivation_path = DerivationPath::from_str("m/44'/1'/0'/0/0").unwrap();
         client.get_xpub(&derivation_path, false).unwrap();
+        client.close().unwrap();
+
     }
 
     #[test]
@@ -110,6 +114,8 @@ mod tests {
         client
             .sign_message("I love BDK wallet", &derivation_path)
             .unwrap();
+        client.close().unwrap();
+
     }
 
     #[test]
@@ -120,6 +126,8 @@ mod tests {
         let descriptor = client.get_descriptors::<String>(account).unwrap();
         assert!(descriptor.internal.len() > 0);
         assert!(descriptor.receive.len() > 0);
+        client.close().unwrap();
+
     }
 
     #[test]
@@ -129,6 +137,8 @@ mod tests {
         let descriptor = client.get_descriptors::<String>(None).unwrap();
         let descriptor = descriptor.receive.first().unwrap();
         client.display_address_with_desc(descriptor).unwrap();
+        client.close().unwrap();
+
     }
 
     #[test]
@@ -142,6 +152,8 @@ mod tests {
             .unwrap();
         assert!(descriptor.internal.len() > 0);
         assert!(descriptor.receive.len() > 0);
+        client.close().unwrap();
+
     }
 
     #[test]
@@ -154,6 +166,8 @@ mod tests {
             .unwrap();
         let descriptor = descriptor.receive.first().unwrap();
         client.display_address_with_desc(descriptor).unwrap();
+        client.close().unwrap();
+
     }
 
     #[test]
@@ -164,6 +178,7 @@ mod tests {
         client
             .display_address_with_path(&derivation_path, types::HWIAddressType::Legacy)
             .unwrap();
+        client.close().unwrap();
     }
 
     #[test]
@@ -175,6 +190,8 @@ mod tests {
         client
             .display_address_with_path(&derivation_path, types::HWIAddressType::Sh_Wit)
             .unwrap();
+        client.close().unwrap();
+
     }
 
     #[test]
@@ -186,6 +203,8 @@ mod tests {
         client
             .display_address_with_path(&derivation_path, types::HWIAddressType::Wit)
             .unwrap();
+        client.close().unwrap();
+
     }
 
     // TODO: HWI 2.0.2 doesn't support displayaddress with taproot
@@ -252,8 +271,12 @@ mod tests {
             }],
             outputs: vec![Output::default()],
         };
+        client.close().unwrap();
+
         let client = get_first_device();
         client.sign_tx(&psbt).unwrap();
+        client.close().unwrap();
+
     }
 
     #[test]
@@ -317,6 +340,7 @@ mod tests {
                 end,
             )
             .unwrap();
+        client.close().unwrap();
     }
 
     #[test]
@@ -353,6 +377,8 @@ mod tests {
             }
             let client = HWIClient::get_client(&device, true, TESTNET).unwrap();
             client.toggle_passphrase().unwrap();
+            client.close().unwrap();
+
             break;
         }
     }
@@ -377,6 +403,7 @@ mod tests {
         )
         .unwrap();
         client.setup_device(Some("My Label"), None).unwrap();
+        client.close().unwrap();
     }
 
     #[test]
@@ -393,6 +420,7 @@ mod tests {
         )
         .unwrap();
         client.restore_device(Some("My Label"), None).unwrap();
+        client.close().unwrap();
     }
 
     #[test]
@@ -409,6 +437,7 @@ mod tests {
             if supported.contains(&device.device_type) {
                 let client = HWIClient::get_client(&device, true, TESTNET).unwrap();
                 client.backup_device(Some("My Label"), None).unwrap();
+                client.close().unwrap();
             }
         }
     }
@@ -431,6 +460,7 @@ mod tests {
             }
             let client = HWIClient::get_client(&device, true, TESTNET).unwrap();
             client.wipe_device().unwrap();
+            client.close().unwrap();
         }
     }
 
