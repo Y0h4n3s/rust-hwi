@@ -2,8 +2,8 @@ use std::convert::TryInto;
 use std::ops::Deref;
 use std::process::Command;
 
-use bitcoin::bip32::DerivationPath;
-use bitcoin::psbt::PartiallySignedTransaction;
+use bdk::bitcoin::psbt::PartiallySignedTransaction;
+use bdk::bitcoin::util::bip32::DerivationPath;
 
 use serde::de::DeserializeOwned;
 use serde_json::value::Value;
@@ -98,7 +98,7 @@ impl HWIClient {
     /// let devices = HWIClient::enumerate()?;
     /// for device in devices {
     ///     let device = device?;
-    ///     let client = HWIClient::get_client(&device, false, bitcoin::Network::Testnet.into())?;
+    ///     let client = HWIClient::get_client(&device, false, bdk::bitcoin::Network::Testnet.into())?;
     ///     let xpub = client.get_master_xpub(HWIAddressType::Tap, 0)?;
     ///     println!(
     ///         "I can see a {} here, and its xpub is {}",
@@ -148,7 +148,7 @@ impl HWIClient {
     ///     Some(HWIDeviceType::Trezor),
     ///     None,
     ///     false,
-    ///     bitcoin::Network::Testnet,
+    ///     bdk::bitcoin::Network::Testnet,
     /// )?;
     /// let xpub = client.get_master_xpub(HWIAddressType::Tap, 0)?;
     /// println!("Trezor's xpub is {}", xpub.to_string());
@@ -160,7 +160,7 @@ impl HWIClient {
         device_type: Option<HWIDeviceType>,
         fingerprint: Option<&str>,
         expert: bool,
-        chain: bitcoin::Network,
+        chain: bdk::bitcoin::Network,
     ) -> Result<HWIClient, Error> {
         let libs = HWILib::initialize()?;
         Python::with_gil(|py| {

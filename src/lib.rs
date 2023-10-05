@@ -2,7 +2,7 @@
 //!
 //! # Example - display address with path
 //! ```no_run
-//! use bitcoin::bip32::{ChildNumber, DerivationPath};
+//! use bdk::bitcoin::util::bip32::{ChildNumber, DerivationPath};
 //! use hwi::error::Error;
 //! use hwi::interface::HWIClient;
 //! use hwi::types;
@@ -16,7 +16,7 @@
 //!     }
 //!     let device = devices.remove(0)?;
 //!     // Create a client for a device
-//!     let client = HWIClient::get_client(&device, true, bitcoin::Network::Testnet.into())?;
+//!     let client = HWIClient::get_client(&device, true, bdk::bitcoin::Network::Testnet.into())?;
 //!     // Display the address from path
 //!     let derivation_path = DerivationPath::from_str("m/44'/1'/0'/0/0").unwrap();
 //!     let hwi_address =
@@ -45,11 +45,11 @@ mod tests {
     use std::collections::BTreeMap;
     use std::str::FromStr;
 
-    use bitcoin::bip32::{DerivationPath, KeySource};
-    use bitcoin::locktime::absolute;
-    use bitcoin::psbt::{Input, Output};
-    use bitcoin::{secp256k1, Transaction};
-    use bitcoin::{Network, TxIn, TxOut};
+    use bdk::bitcoin::util::bip32::{DerivationPath, KeySource};
+    use bdk::bitcoin::locktime::PackedLockTime;
+    use bdk::bitcoin::psbt::{Input, Output};
+    use bdk::bitcoin::{secp256k1, Transaction};
+    use bdk::bitcoin::{Network, TxIn, TxOut};
 
     #[cfg(feature = "miniscript")]
     use miniscript::{Descriptor, DescriptorPublicKey};
@@ -229,11 +229,11 @@ mod tests {
         // Here device fingerprint is same as master xpub fingerprint
         hd_keypaths.insert(pk.public_key, (device.fingerprint, derivation_path));
 
-        let script_pubkey = address.address.assume_checked().script_pubkey();
+        let script_pubkey = address.address.script_pubkey();
 
         let previous_tx = Transaction {
             version: 1,
-            lock_time: absolute::LockTime::from_consensus(0),
+            lock_time: PackedLockTime(0),
             input: vec![TxIn::default()],
             output: vec![TxOut {
                 value: 100,
@@ -242,16 +242,16 @@ mod tests {
         };
 
         let previous_txin = TxIn {
-            previous_output: bitcoin::OutPoint {
+            previous_output: bdk::bitcoin::OutPoint {
                 txid: previous_tx.txid(),
                 vout: Default::default(),
             },
             ..Default::default()
         };
-        let psbt = bitcoin::psbt::PartiallySignedTransaction {
+        let psbt = bdk::bitcoin::psbt::PartiallySignedTransaction {
             unsigned_tx: Transaction {
                 version: 1,
-                lock_time: absolute::LockTime::from_consensus(0),
+                lock_time: PackedLockTime(0),
                 input: vec![previous_txin],
                 output: vec![TxOut {
                     value: 50,
